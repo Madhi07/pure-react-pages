@@ -5,24 +5,81 @@ import Navigation from "@/components/ui/navigation";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    phone: '',
+    jobTitle: '',
     company: '',
+    companySize: '',
     message: ''
   });
 
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedSource, setSelectedSource] = useState('');
+  const [selectedBudget, setSelectedBudget] = useState('');
+  const [selectedUrgency, setSelectedUrgency] = useState('');
+  const [preferredContact, setPreferredContact] = useState('');
 
   const topics = [
     "General Inquiry",
-    "Sales Question",
+    "Sales & Pricing",
     "Technical Support",
-    "Partnership",
-    "Feature Request"
+    "Partnership Opportunity",
+    "Feature Request",
+    "Demo Request"
+  ];
+
+  const companySizes = [
+    "1-10 employees",
+    "11-50 employees", 
+    "51-200 employees",
+    "201-1000 employees",
+    "1000+ employees"
+  ];
+
+  const budgetRanges = [
+    "Under $5,000",
+    "$5,000 - $15,000",
+    "$15,000 - $50,000",
+    "$50,000 - $100,000",
+    "Over $100,000"
+  ];
+
+  const urgencyOptions = [
+    "Just exploring",
+    "Within 3 months",
+    "Within 1 month",
+    "ASAP"
+  ];
+
+  const contactMethods = [
+    "Email",
+    "Phone call",
+    "Video call",
+    "In-person meeting"
+  ];
+
+  const sourceOptions = [
+    "Google search",
+    "Social media",
+    "Referral",
+    "Industry event",
+    "Partner recommendation",
+    "Advertisement",
+    "Other"
   ];
 
   const handleSubmit = () => {
-    console.log("Form submitted:", { ...formData, topic: selectedTopic });
+    console.log("Form submitted:", { 
+      ...formData, 
+      topic: selectedTopic,
+      companySize: formData.companySize,
+      source: selectedSource,
+      budget: selectedBudget,
+      urgency: selectedUrgency,
+      preferredContact: preferredContact
+    });
     // Handle form submission logic here
   };
 
@@ -48,12 +105,21 @@ const Contact = () => {
               <h2 className="text-3xl font-bold mb-8">Send us a message</h2>
               
               <div className="space-y-6">
-                <CustomInput
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onValueChange={(value) => setFormData({...formData, name: value})}
-                />
+                {/* Name Fields */}
+                <div className="grid grid-cols-2 gap-4">
+                  <CustomInput
+                    placeholder="First Name"
+                    value={formData.firstName}
+                    onValueChange={(value) => setFormData({...formData, firstName: value})}
+                  />
+                  <CustomInput
+                    placeholder="Last Name"
+                    value={formData.lastName}
+                    onValueChange={(value) => setFormData({...formData, lastName: value})}
+                  />
+                </div>
                 
+                {/* Contact Information */}
                 <CustomInput
                   placeholder="Email Address"
                   type="email"
@@ -62,15 +128,49 @@ const Contact = () => {
                 />
                 
                 <CustomInput
-                  placeholder="Company Name"
-                  value={formData.company}
-                  onValueChange={(value) => setFormData({...formData, company: value})}
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onValueChange={(value) => setFormData({...formData, phone: value})}
                 />
+
+                {/* Professional Information */}
+                <div className="grid grid-cols-2 gap-4">
+                  <CustomInput
+                    placeholder="Job Title"
+                    value={formData.jobTitle}
+                    onValueChange={(value) => setFormData({...formData, jobTitle: value})}
+                  />
+                  <CustomInput
+                    placeholder="Company Name"
+                    value={formData.company}
+                    onValueChange={(value) => setFormData({...formData, company: value})}
+                  />
+                </div>
+
+                {/* Company Size Selection */}
+                <div>
+                  <p className="text-sm font-medium mb-3 text-foreground">Company Size</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {companySizes.map((size) => (
+                      <div
+                        key={size}
+                        onClick={() => setFormData({...formData, companySize: size})}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                          formData.companySize === size
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                        }`}
+                      >
+                        {size}
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
                 {/* Topic Selection */}
                 <div>
                   <p className="text-sm font-medium mb-3 text-foreground">What can we help you with?</p>
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {topics.map((topic) => (
                       <div
                         key={topic}
@@ -82,6 +182,88 @@ const Contact = () => {
                         }`}
                       >
                         {topic}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Budget Range (show only for sales inquiries) */}
+                {(selectedTopic === 'Sales & Pricing' || selectedTopic === 'Demo Request') && (
+                  <div>
+                    <p className="text-sm font-medium mb-3 text-foreground">Budget Range (Annual)</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {budgetRanges.map((budget) => (
+                        <div
+                          key={budget}
+                          onClick={() => setSelectedBudget(budget)}
+                          className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                            selectedBudget === budget
+                              ? 'border-primary bg-primary/10 text-primary'
+                              : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                          }`}
+                        >
+                          {budget}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Timeline/Urgency */}
+                <div>
+                  <p className="text-sm font-medium mb-3 text-foreground">Timeline</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {urgencyOptions.map((urgency) => (
+                      <div
+                        key={urgency}
+                        onClick={() => setSelectedUrgency(urgency)}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                          selectedUrgency === urgency
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                        }`}
+                      >
+                        {urgency}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* How did you hear about us */}
+                <div>
+                  <p className="text-sm font-medium mb-3 text-foreground">How did you hear about us?</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {sourceOptions.map((source) => (
+                      <div
+                        key={source}
+                        onClick={() => setSelectedSource(source)}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                          selectedSource === source
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                        }`}
+                      >
+                        {source}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Preferred Contact Method */}
+                <div>
+                  <p className="text-sm font-medium mb-3 text-foreground">Preferred Contact Method</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {contactMethods.map((method) => (
+                      <div
+                        key={method}
+                        onClick={() => setPreferredContact(method)}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                          preferredContact === method
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                        }`}
+                      >
+                        {method}
                       </div>
                     ))}
                   </div>
