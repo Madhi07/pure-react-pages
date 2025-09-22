@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomInput } from "@/components/ui/custom-input";
+import { CustomSelect } from "@/components/ui/custom-select";
 import Navigation from "@/components/ui/navigation";
 
 const Contact = () => {
@@ -21,53 +22,53 @@ const Contact = () => {
   const [selectedUrgency, setSelectedUrgency] = useState('');
   const [preferredContact, setPreferredContact] = useState('');
 
-  const topics = [
-    "General Inquiry",
-    "Sales & Pricing",
-    "Technical Support",
-    "Partnership Opportunity",
-    "Feature Request",
-    "Demo Request"
+  const topicOptions = [
+    { value: "general", label: "General Inquiry" },
+    { value: "sales", label: "Sales & Pricing" },
+    { value: "support", label: "Technical Support" },
+    { value: "partnership", label: "Partnership Opportunity" },
+    { value: "feature", label: "Feature Request" },
+    { value: "demo", label: "Demo Request" }
   ];
 
-  const companySizes = [
-    "1-10 employees",
-    "11-50 employees", 
-    "51-200 employees",
-    "201-1000 employees",
-    "1000+ employees"
+  const companySizeOptions = [
+    { value: "1-10", label: "1-10 employees" },
+    { value: "11-50", label: "11-50 employees" },
+    { value: "51-200", label: "51-200 employees" },
+    { value: "201-1000", label: "201-1000 employees" },
+    { value: "1000+", label: "1000+ employees" }
   ];
 
-  const budgetRanges = [
-    "Under $5,000",
-    "$5,000 - $15,000",
-    "$15,000 - $50,000",
-    "$50,000 - $100,000",
-    "Over $100,000"
+  const budgetOptions = [
+    { value: "under-5k", label: "Under $5,000" },
+    { value: "5k-15k", label: "$5,000 - $15,000" },
+    { value: "15k-50k", label: "$15,000 - $50,000" },
+    { value: "50k-100k", label: "$50,000 - $100,000" },
+    { value: "over-100k", label: "Over $100,000" }
   ];
 
   const urgencyOptions = [
-    "Just exploring",
-    "Within 3 months",
-    "Within 1 month",
-    "ASAP"
+    { value: "exploring", label: "Just exploring" },
+    { value: "3-months", label: "Within 3 months" },
+    { value: "1-month", label: "Within 1 month" },
+    { value: "asap", label: "ASAP" }
   ];
 
-  const contactMethods = [
-    "Email",
-    "Phone call",
-    "Video call",
-    "In-person meeting"
+  const contactMethodOptions = [
+    { value: "email", label: "Email" },
+    { value: "phone", label: "Phone call" },
+    { value: "video", label: "Video call" },
+    { value: "in-person", label: "In-person meeting" }
   ];
 
   const sourceOptions = [
-    "Google search",
-    "Social media",
-    "Referral",
-    "Industry event",
-    "Partner recommendation",
-    "Advertisement",
-    "Other"
+    { value: "google", label: "Google search" },
+    { value: "social", label: "Social media" },
+    { value: "referral", label: "Referral" },
+    { value: "event", label: "Industry event" },
+    { value: "partner", label: "Partner recommendation" },
+    { value: "ad", label: "Advertisement" },
+    { value: "other", label: "Other" }
   ];
 
   const handleSubmit = () => {
@@ -149,124 +150,70 @@ const Contact = () => {
 
                 {/* Company Size Selection */}
                 <div>
-                  <p className="text-sm font-medium mb-3 text-foreground">Company Size</p>
-                  <div className="grid grid-cols-1 gap-2">
-                    {companySizes.map((size) => (
-                      <div
-                        key={size}
-                        onClick={() => setFormData({...formData, companySize: size})}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          formData.companySize === size
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
-                      >
-                        {size}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-sm font-medium mb-3 text-foreground block">Company Size</label>
+                  <CustomSelect
+                    placeholder="Select company size"
+                    options={companySizeOptions}
+                    value={formData.companySize}
+                    onChange={(e) => setFormData({...formData, companySize: e.target.value})}
+                  />
                 </div>
 
                 {/* Topic Selection */}
                 <div>
-                  <p className="text-sm font-medium mb-3 text-foreground">What can we help you with?</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {topics.map((topic) => (
-                      <div
-                        key={topic}
-                        onClick={() => setSelectedTopic(topic)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          selectedTopic === topic
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
-                      >
-                        {topic}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-sm font-medium mb-3 text-foreground block">What can we help you with?</label>
+                  <CustomSelect
+                    placeholder="Select inquiry type"
+                    options={topicOptions}
+                    value={selectedTopic}
+                    onChange={(e) => setSelectedTopic(e.target.value)}
+                  />
                 </div>
 
                 {/* Budget Range (show only for sales inquiries) */}
-                {(selectedTopic === 'Sales & Pricing' || selectedTopic === 'Demo Request') && (
+                {(selectedTopic === 'sales' || selectedTopic === 'demo') && (
                   <div>
-                    <p className="text-sm font-medium mb-3 text-foreground">Budget Range (Annual)</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {budgetRanges.map((budget) => (
-                        <div
-                          key={budget}
-                          onClick={() => setSelectedBudget(budget)}
-                          className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                            selectedBudget === budget
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                          }`}
-                        >
-                          {budget}
-                        </div>
-                      ))}
-                    </div>
+                    <label className="text-sm font-medium mb-3 text-foreground block">Budget Range (Annual)</label>
+                    <CustomSelect
+                      placeholder="Select budget range"
+                      options={budgetOptions}
+                      value={selectedBudget}
+                      onChange={(e) => setSelectedBudget(e.target.value)}
+                    />
                   </div>
                 )}
 
                 {/* Timeline/Urgency */}
                 <div>
-                  <p className="text-sm font-medium mb-3 text-foreground">Timeline</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {urgencyOptions.map((urgency) => (
-                      <div
-                        key={urgency}
-                        onClick={() => setSelectedUrgency(urgency)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          selectedUrgency === urgency
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
-                      >
-                        {urgency}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-sm font-medium mb-3 text-foreground block">Timeline</label>
+                  <CustomSelect
+                    placeholder="Select timeline"
+                    options={urgencyOptions}
+                    value={selectedUrgency}
+                    onChange={(e) => setSelectedUrgency(e.target.value)}
+                  />
                 </div>
 
                 {/* How did you hear about us */}
                 <div>
-                  <p className="text-sm font-medium mb-3 text-foreground">How did you hear about us?</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {sourceOptions.map((source) => (
-                      <div
-                        key={source}
-                        onClick={() => setSelectedSource(source)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          selectedSource === source
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
-                      >
-                        {source}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-sm font-medium mb-3 text-foreground block">How did you hear about us?</label>
+                  <CustomSelect
+                    placeholder="Select source"
+                    options={sourceOptions}
+                    value={selectedSource}
+                    onChange={(e) => setSelectedSource(e.target.value)}
+                  />
                 </div>
 
                 {/* Preferred Contact Method */}
                 <div>
-                  <p className="text-sm font-medium mb-3 text-foreground">Preferred Contact Method</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {contactMethods.map((method) => (
-                      <div
-                        key={method}
-                        onClick={() => setPreferredContact(method)}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          preferredContact === method
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
-                      >
-                        {method}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-sm font-medium mb-3 text-foreground block">Preferred Contact Method</label>
+                  <CustomSelect
+                    placeholder="Select contact method"
+                    options={contactMethodOptions}
+                    value={preferredContact}
+                    onChange={(e) => setPreferredContact(e.target.value)}
+                  />
                 </div>
 
                 {/* Message Textarea Alternative */}
